@@ -1,0 +1,123 @@
+[meta title:"final project" description:"final project" /]
+
+[Header
+  fullWidth:true
+  title:"final project"
+  subtitle:"-"
+  author:"haonan wu"
+  authorLink:"https://idyll-lang.org"
+  date:`(new Date()).toDateString()`
+  background:"#222222"
+  color:"#ffffff"
+   /]
+
+
+
+
+# visualization
+##this is how the the data set looks like
+this dateset is find on https://data.illinois.gov/dataset/idph-death-data-2010-2017/resource/1b678156-8452-4b81-b601-549bf73fa85f (IDPH Death Data 2010-2017 - Death Data 2010-2017.Csv - Data.Illinois.Gov, 2019)
+[data name:'myData' source:'deathdata.csv' /]
+// [Table data:myData /]
+
+##here is the interactive visualization
+
+[var name:"selectVal" value:"Ethnicity" /]
+[Select value:selectVal options:`[ "Ethnicity", "Race", "Age Group"]`  /]
+
+
+[IdyllVegaLite data:myData spec:`{
+  width: 600,
+  height: 300,
+  mark: "bar",
+  encoding: {
+    x: {
+      field: selectVal,
+      type: "nominal",
+      // axis: {title: selectVal}
+    },
+    y: {
+      // aggregate: "count",
+      field: "Count",
+      aggregate: "sum",
+      type: "quantitative",
+      // axis: {title: "Count"},
+    }
+  }
+}` /]
+
+
+this panel is easy to use, there is only one drop list to choose the variable. And you can choose one from it, after you choose the variable, the plot will update and it will plot the total death against the variable. for example, if you choose 'Ethnicity' as the variable, then it will plot bar chart about the total death against differnt Ethnicity.
+
+It is very obvious that, the central interactive visualization is ploting the total death number against differnt groups of people. Besides different groups of people, there is another column "year", so we can also plot the total death number against the time, see is there any increasing or decreasing trend on the death number.
+
+
+[IdyllVegaLite data:myData spec:`{
+  width: 600,
+  height: 300,
+  mark: "bar",
+  encoding: {
+    x: {
+      field: "Year",
+      type: "nominal",
+      // axis: {title: selectVal}
+    },
+    y: {
+      // aggregate: "count",
+      field: "Count",
+      aggregate: "sum",
+      type: "quantitative",
+      // axis: {title: "Count"},
+    }
+  }
+}` /]
+
+Besides the trend of the death number, we can also plot the death number against gender. Before i plot the graph, actually we can make some guess on the result, one of the guess can be the death number ratio between male and female is equal to the gender ratio of total population. And let's see the result. In order to make it clear, i use two differnt plot, first one is pie chart, since pie chart can show the ratio clearly, it can show the comparison clearly. and second one is bar chart, since bar chart can show the total number.
+
+[IdyllVegaLite data:myData spec:`{
+  width: 600,
+  height: 300,
+  mark: "arc",
+  encoding: {
+    color: {
+      field: "Gender",
+      type: "nominal",
+      // axis: {title: selectVal}
+    },
+    theta: {
+      // aggregate: "count",
+      field: "Count",
+      aggregate: "sum",
+      type: "quantitative",
+      // axis: {title: "Count"},
+    }
+  }
+}` /]
+
+[IdyllVegaLite data:myData spec:`{
+  width: 600,
+  height: 300,
+  mark: "bar",
+  encoding: {
+    x: {
+      field: "Gender",
+      type: "nominal",
+      // axis: {title: selectVal}
+    },
+    y: {
+      // aggregate: "count",
+      field: "Count",
+      aggregate: "sum",
+      type: "quantitative",
+      // axis: {title: "Count"},
+    }
+  }
+}` /]
+
+And here is the result, from the number we get in bar chart, we can calculate that the ratio is about 51:49. And the census result from https://www.census.gov/quickfacts/IL (U.S. Census Bureau QuickFacts: Illinois, n.d.), shows that the female percentage is 50.9%, that is a perfect match to our visualization. And we can conclude that the death number gender ratio is proportional to total population gender ratio.
+
+#Reference
+IDPH Death Data 2010-2017 - Death Data 2010-2017.csv - data.illinois.gov. (2019, February 4). IDPH. https://data.illinois.gov/dataset/idph-death-data-2010-2017/resource/1b678156-8452-4b81-b601-549bf73fa85f 
+
+U.S. Census Bureau QuickFacts: Illinois. (n.d.). Census Bureau QuickFacts. https://www.census.gov/quickfacts/IL 
+
